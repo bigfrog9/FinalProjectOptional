@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel;
 
 namespace FinalProjectOptional
 {
@@ -11,8 +12,12 @@ namespace FinalProjectOptional
     {
         static string path = @"InteractiveFinal.txt";
 
+        static string story=@"story.txt";
+
         static string[] readText = File.ReadAllLines(path);
         
+        static string saveData = File.ReadAllText(story);
+
         static string[] pageElements;
         
         static bool GameOver = false;
@@ -23,9 +28,12 @@ namespace FinalProjectOptional
 
         static int currentPage = 0;
 
+        static string pageNumber;
+
 
         static void Main(string[] args)
         {
+            
             //main menu loop
             while (Menu==true&&GameOver==false)
             {
@@ -41,6 +49,13 @@ namespace FinalProjectOptional
 
                 DisplayScreen();
 
+                //saving the game
+                if (choice.KeyChar == '1')
+                {
+                    pageNumber = currentPage.ToString();
+
+                    File.WriteAllText(story, pageNumber);
+                }
 
                 if (pageElements.Length > 1)
                 {
@@ -85,6 +100,7 @@ namespace FinalProjectOptional
 
             choice = Console.ReadKey(true);
 
+            //start the game
             if (choice.KeyChar == 'a')
             {
                 Menu = false;
@@ -95,9 +111,12 @@ namespace FinalProjectOptional
                 Menu = false;
             }
 
+            //load game from a certain page
             else if(choice.KeyChar == 'b')
             {
-                //add a way to load game
+                currentPage = int.Parse(saveData);
+
+                Menu=false;
             }
 
             else if (choice.KeyChar == 'B')
@@ -105,6 +124,7 @@ namespace FinalProjectOptional
                 //add a way to load game
             }
 
+            //quit the game
             else if (choice.KeyChar == 'c')
             {
                 GameOver = true;   
@@ -126,9 +146,10 @@ namespace FinalProjectOptional
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(" to exit without saving. Press ");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Enter");
+            Console.Write("1");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(" to save the game");
+
 
             //when it's not an ending
             if (pageElements.Length > 1)
