@@ -12,7 +12,7 @@ namespace FinalProjectOptional
     {
         static string path = @"InteractiveFinal.txt";
 
-        static string story=@"story.txt";
+        static string story=@"savegame.txt";
 
         static string[] readText = File.ReadAllLines(path);
         
