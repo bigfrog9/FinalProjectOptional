@@ -38,44 +38,44 @@ namespace FinalProjectOptional
             while (Menu==true&&GameOver==false)
             {
                 MainMenu();
-            }
 
             //the game loop
-            while (GameOver == false&&Menu==false)
-            {
-                pageElements = readText[currentPage].Split(';');
-
-                Console.Clear();
-
-                DisplayScreen();
-
-                //saving the game
-                if (choice.KeyChar == '1')
+                while (GameOver == false&&Menu==false)
                 {
-                    pageNumber = currentPage.ToString();
+                    pageElements = readText[currentPage].Split(';');
 
-                    File.WriteAllText(story, pageNumber);
-                }
+                    Console.Clear();
 
-                if (pageElements.Length > 1)
-                {
-                    choice = Console.ReadKey(true);
+                    DisplayScreen();
 
-                    if (choice.KeyChar == 'a' && pageElements.Length > 1)
+                    //saving the game
+                    if (choice.KeyChar == '1')
                     {
-                        currentPage = int.Parse(pageElements[3]);
+                        pageNumber = currentPage.ToString();
+
+                        File.WriteAllText(story, pageNumber);
                     }
 
-                    else if (choice.KeyChar == 'b' && pageElements.Length > 1)
+                    if (pageElements.Length > 1)
                     {
-                        currentPage = int.Parse(pageElements[4]);
-                    }
+                        choice = Console.ReadKey(true);
 
-                    else if (choice.KeyChar == 'c' && pageElements.Length > 1)
-                    {
-                        GameOver = true;
-                    }
+                        if (choice.KeyChar == 'a' && pageElements.Length > 1)
+                        {
+                            currentPage = int.Parse(pageElements[3]);
+                        }
 
+                        else if (choice.KeyChar == 'b' && pageElements.Length > 1)
+                        {
+                            currentPage = int.Parse(pageElements[4]);
+                        }
+
+                        else if (choice.KeyChar == 'c' && pageElements.Length > 1)
+                        {
+                            GameOver = true;
+                        }
+
+                    }
                 }
 
             }
@@ -194,7 +194,9 @@ namespace FinalProjectOptional
 
                     Console.WriteLine("Press any key to quit the game");
                     Console.ReadKey(true);
-                    GameOver = true;
+                    currentPage = 0;
+                    Console.Clear();
+                    Menu = true;
                 }
                 //if it's a normal ending
                 else
@@ -213,6 +215,8 @@ namespace FinalProjectOptional
 
                     Console.ReadKey(true);
                     currentPage = 0;
+                    Console.Clear();
+                    Menu = true;
                 }
             }
 
