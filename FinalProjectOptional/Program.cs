@@ -14,6 +14,7 @@ namespace FinalProjectOptional
         static string[] pageElements;
         
         static bool GameOver = false;
+
         //determines if main menu should be open
         static bool Menu = true;
         
@@ -30,25 +31,82 @@ namespace FinalProjectOptional
 
             string story = @"savegame.txt";
 
+            string story2 = @"savegame2.txt";
+
             string[] readText = File.ReadAllLines(path);
+
+            try
+            {
+                string saveData2 = File.ReadAllText(story2);
+
+            }
+            catch
+            {
+                pageNumber = currentPage.ToString();
+
+                Console.WriteLine("There is no second save file. It has now been created. Press any key to continue.");
+                File.WriteAllText(story2, pageNumber);
+                Console.ReadKey(true);
+                Console.Clear();
+                Menu = true;
+            }
 
             try
             {
                 string saveData = File.ReadAllText(story);
 
-
-            //main menu loop
-            while (Menu==true&&GameOver==false)
-            {
-                MainMenu(story,saveData);
-
-            //the game loop
-                while (GameOver == false&&Menu==false)
+                try
                 {
-                    try
+                    pageElements = readText[currentPage].Split(';');
+                }
+                catch
+                {
+                    Console.WriteLine("Something has gone wrong with the main text file. Please delete all local files and redownload the game.");
+                    Console.WriteLine("Press any key to close");
+                    Console.ReadKey(true);
+                    GameOver = true;
+                }
+                if (pageElements.Length == 0)
+                {
+                    Console.WriteLine("Something has gone wrong with the main text file. Please delete all local files and redownload the game.");
+                    Console.WriteLine("Press any key to close");
+                    Console.ReadKey(true);
+                    GameOver = true;
+                }
+                else if (pageElements.Length > 5)
+                {
+                    Console.WriteLine("Something has gone wrong with the main text file. Please delete all local files and redownload the game.");
+                    Console.WriteLine("Press any key to close");
+                    Console.ReadKey(true);
+                    GameOver = true;
+                }
+                //main menu loop
+                while (Menu==true&&GameOver==false)
+                {
+                    MainMenu(story,saveData);
+
+                //the game loop
+                    while (GameOver == false&&Menu==false)
                     {
-                        pageElements = readText[currentPage].Split(';');
-                    }
+                        if(pageElements.Length==0)
+                        {
+                            Console.WriteLine("Something has gone wrong with the main text file. Please delete all local files and redownload the game.");
+                            Console.WriteLine("Press any key to close");
+                            Console.ReadKey(true);
+                            GameOver = true;
+                        }
+                        else if (pageElements.Length > 5)
+                        {
+                            Console.WriteLine("Something has gone wrong with the main text file. Please delete all local files and redownload the game.");
+                            Console.WriteLine("Press any key to close");
+                            Console.ReadKey(true);
+                            GameOver = true;
+                        }
+
+                        try
+                        {
+                            pageElements = readText[currentPage].Split(';');
+                        }
 
                         catch (IndexOutOfRangeException)
                         {
@@ -56,67 +114,113 @@ namespace FinalProjectOptional
                             Console.WriteLine();
                             Console.WriteLine();
                             Console.WriteLine("Not really, but please press any button to overwrite the file. You will unfortunately lose your progress. And will restart the game.");
+                            Console.WriteLine();
+                            Console.WriteLine("If the problem is still not fixed, the problem is probably with the save file known as 'story', it is likely with the file known as 'InteractiveFinal'.");
+                            Console.WriteLine("Unfortunately, if that is the case, you will need to delete all local files and redownload the game.");
 
                             Console.ReadKey(true);
                             File.WriteAllText(story, pageNumber);
+                            File.WriteAllText(story2, pageNumber);
                             GameOver = true;
 
                         }
 
                         Console.Clear();
 
-                    DisplayScreen();
+                        DisplayScreen();
 
-                    //saving the game
-                    if (choice.KeyChar == '1')
-                    {
-                        pageNumber = currentPage.ToString();
+                        //saving the game
+                        if (choice.KeyChar == '1')
+                        {
+                            Console.Beep();
 
-                        File.WriteAllText(story, pageNumber);
+                            pageNumber = currentPage.ToString();
+
+                            File.WriteAllText(story, pageNumber);
+                        }
+                        else if (choice.KeyChar == '2')
+                        {
+                            Console.Beep();
+
+                            pageNumber = currentPage.ToString();
+
+                            File.WriteAllText(story2, pageNumber);
+                        }
+                        //not an ending
+                        if (pageElements.Length > 1)
+                        {
+                            choice = Console.ReadKey(true);
+
+                            if (choice.KeyChar == 'a' && pageElements.Length > 1)
+                            {
+                                Console.Beep();
+
+                                currentPage = int.Parse(pageElements[3]);
+                            }
+
+                            else if (choice.KeyChar == 'b' && pageElements.Length > 1)
+                            {
+                                Console.Beep();
+
+                                currentPage = int.Parse(pageElements[4]);
+                            }
+
+                            else if (choice.KeyChar == 'c' && pageElements.Length > 1)
+                            {
+                                Console.Beep();
+
+                                GameOver = true;
+                            }
+                            
+                            else if (choice.KeyChar == '1')
+                            {
+                                Console.Beep();
+
+                                pageNumber = currentPage.ToString();
+
+                                File.WriteAllText(story, pageNumber);
+                            }
+                            
+                            else if (choice.KeyChar == '2')
+                            {
+                                Console.Beep();
+
+                                pageNumber = currentPage.ToString();
+
+                                File.WriteAllText(story2, pageNumber);
+                            }
+
+                            //if the player presses a wrong key it's not really a problem, but this will chastise them
+                            else
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine();
+                                Console.WriteLine("Oops! That key wasn't an option.");
+                                Console.ReadKey(true);
+                            }
+
+                        }
                     }
-                    //not an ending
-                    if (pageElements.Length > 1)
-                    {
-                        choice = Console.ReadKey(true);
 
-                        if (choice.KeyChar == 'a' && pageElements.Length > 1)
-                        {
-                            currentPage = int.Parse(pageElements[3]);
-                        }
-
-                        else if (choice.KeyChar == 'b' && pageElements.Length > 1)
-                        {
-                            currentPage = int.Parse(pageElements[4]);
-                        }
-
-                        else if (choice.KeyChar == 'c' && pageElements.Length > 1)
-                        {
-                            GameOver = true;
-                        }
-
-                        //if the player presses a wrong key it's not really a problem, but this will chastise them
-                        else
-                        {
-                            Console.WriteLine("Oops! That key wasn't an option.");
-                        }
-
-                    }
                 }
-
-             }
 
             }
 
             catch (FileNotFoundException)
             {
-                Console.WriteLine("There is no file called 'story.txt in balabalabla. It has now been created. Press any key to exit, and then please open the game again.");
+                pageNumber = currentPage.ToString();
+                Console.WriteLine("There is no first save file. It has now been created. Press any key to close the game.");
                 File.WriteAllText(story, pageNumber);
                 Console.ReadKey(true);
+                Console.Clear();
+                GameOver=true;
             }
         }
 
         static void MainMenu(string story, string saveData)
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("CAVE OF WISHES");
 
             Console.WriteLine();
@@ -125,7 +229,11 @@ namespace FinalProjectOptional
             
             Console.WriteLine();
 
-            Console.WriteLine("LOAD GAME: B");
+            Console.WriteLine("LOAD SAVE FILE 1: B");
+
+            Console.WriteLine();
+
+            Console.WriteLine("LOAD SAVE FILE 2: D");
 
             Console.WriteLine();
 
@@ -136,17 +244,21 @@ namespace FinalProjectOptional
             //start the game
             if (choice.KeyChar == 'a')
             {
+                Console.Beep();
                 Menu = false;
             }
 
-            if (choice.KeyChar == 'A')
+            else if (choice.KeyChar == 'A')
             {
+                Console.Beep();
+
                 Menu = false;
             }
 
             //load game from a certain page
-            else if(choice.KeyChar == 'b')
+            else if (choice.KeyChar == 'b')
             {
+                Console.Beep();
 
                 try
                 {
@@ -163,8 +275,8 @@ namespace FinalProjectOptional
 
                     pageNumber = currentPage.ToString();
 
-                    File.WriteAllText(story, pageNumber); File.WriteAllText(story, pageNumber);
-                    
+                    File.WriteAllText(story, pageNumber);
+
                     Console.Clear();
 
                 }
@@ -173,18 +285,118 @@ namespace FinalProjectOptional
 
             else if (choice.KeyChar == 'B')
             {
-                //add a way to load game
+                Console.Beep();
+
+                try
+                {
+                    currentPage = int.Parse(saveData);
+                }
+                catch
+                {
+                    Console.WriteLine("ERROR: The file has been tampered with. Computer will now explode.");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("Not really, but please press any button to overwrite the file. You will unfortunately lose your progress and have to start from the beginning.");
+
+                    Console.ReadKey(true);
+
+                    pageNumber = currentPage.ToString();
+
+                    File.WriteAllText(story, pageNumber);
+
+                    Console.Clear();
+
+                }
+                Menu = false;
+            }
+            
+            //load save file 2
+            else if (choice.KeyChar == 'd')
+            {
+                Console.Beep();
+
+                string story2 = @"savegame2.txt";
+
+                string saveData2 = File.ReadAllText(story2);
+
+                try
+                {
+                    currentPage = int.Parse(saveData2);
+                }
+                catch
+                {
+                    Console.WriteLine("ERROR: The file has been tampered with. Computer will now explode.");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("Not really, but please press any button to overwrite the file. You will unfortunately lose your progress and have to start from the beginning.");
+
+                    Console.ReadKey(true);
+
+                    pageNumber = currentPage.ToString();
+
+                    File.WriteAllText(story2, pageNumber);
+
+                    Console.Clear();
+
+                }
+                Menu = false;
+            }
+
+            else if (choice.KeyChar == 'D')
+            {
+                Console.Beep();
+                
+                string story2 = @"savegame2.txt";
+
+                string saveData2 = File.ReadAllText(story2);
+
+
+                try
+                {
+                    currentPage = int.Parse(saveData2);
+                }
+                catch
+                {
+                    Console.WriteLine("ERROR: The file has been tampered with. Computer will now explode.");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("Not really, but please press any button to overwrite the file. You will unfortunately lose your progress and have to start from the beginning.");
+
+                    Console.ReadKey(true);
+
+                    pageNumber = currentPage.ToString();
+
+                    File.WriteAllText(story2, pageNumber);
+
+                    Console.Clear();
+
+                }
+                Menu = false;
             }
 
             //quit the game
             else if (choice.KeyChar == 'c')
             {
-                GameOver = true;   
+                Console.Beep();
+
+                GameOver = true;
             }
 
             else if (choice.KeyChar == 'C')
             {
+                Console.Beep();
+
                 GameOver = true;
+            }
+            
+            //if the player presses a wrong key it's not really a problem, but this will chastise them
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("Oops! That key wasn't an option.");
+                Console.ReadKey(true);
+                Console.Clear();
             }
 
         }
@@ -201,7 +413,11 @@ namespace FinalProjectOptional
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("1");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(" to save the game");
+            Console.Write(" to save to save file 1. Press");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("2");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(" to save to save file 2.");
 
 
             //when it's not an ending
@@ -217,6 +433,7 @@ namespace FinalProjectOptional
                 Console.WriteLine();
                 Console.ForegroundColor= ConsoleColor.DarkGreen;
                 Console.WriteLine("WHAT DO YOU DO?");
+                Console.WriteLine();
                 
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write("Press A:");
@@ -229,7 +446,6 @@ namespace FinalProjectOptional
                 Console.Write("Press B:");
                 Console.WriteLine(pageElements[2]);
             }
-
 
             //when it is an ending
             else
